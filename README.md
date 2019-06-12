@@ -1,4 +1,4 @@
-### Iowa Housing Price Competition on Kaggle
+### Iowa Housing Price Competition on Kaggle (top 5%)
 
 - [Run in Google Colab](https://colab.research.google.com/github/druce/iowa/blob/master/iowa)
 - [Competition leaderboard](https://www.kaggle.com/c/home-data-for-ml-course/leaderboard)
