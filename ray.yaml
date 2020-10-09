@@ -1,0 +1,22 @@
+cluster_name: basic-ray
+
+# The maximum number of workers nodes to launch in addition to the head
+# node.
+max_workers: 0 # this means zero workers
+
+# Cloud-provider specific configuration.
+provider:
+   type: aws
+   region: us-west-2
+   availability_zone: us-west-2a
+
+# How Ray will authenticate with newly launched nodes.
+auth:
+   ssh_user: ubuntu
+
+setup_commands:
+  - pip install ray[all]
+  # The following line demonstrate that you can specify arbitrary
+  # startup scripts on the cluster.
+  - touch /tmp/some_file.txt
+  

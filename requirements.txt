@@ -1,0 +1,16 @@
+hyperopt
+ipywidgets
+jupyter
+lightgbm
+matplotlib
+mlxtend
+numpy
+pandas
+pandas-profiling
+ray
+scikit-learn
+scipy
+seaborn
+xgboost
+yellowbrick
+
