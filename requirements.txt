@@ -1,5 +1,6 @@
 bayesian-optimization==1.2.0
 boto3==1.15.16
+dataclasses==0.7
 environment-kernels==1.1.1
 hyperopt==0.2.4
 ipywidgets==7.5.1
