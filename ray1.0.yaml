@@ -73,6 +73,11 @@ worker_nodes:
 
     # Additional options in the boto docs.
 
+file_mounts: {
+#    "/path1/on/remote/machine": "/path1/on/local/machine",
+#    "/path2/on/remote/machine": "/path2/on/local/machine",
+}
+
 cluster_synced_files: []
 
 setup_commands:
