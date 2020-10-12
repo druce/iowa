@@ -42,7 +42,8 @@ auth:
 
 head_node:
     InstanceType: m5.large
-    ImageId: ami-0b206e33498f6acbe  # Deep Learning AMI 18.04 + ray 1.0 etc.
+    ImageId: ami-01aad86525617098d   # base DL AMI 35
+    # ImageId: ami-0b206e33498f6acbe  # Deep Learning AMI 18.04 + ray 1.0 etc.
     SubnetId: subnet-78d4bd53
 
     # You can provision additional disk space with a conf as follows
@@ -59,7 +60,8 @@ head_node:
 # http://boto3.readthedocs.io/en/latest/reference/services/ec2.html#EC2.ServiceResource.create_instances
 worker_nodes:
     InstanceType: m5.large
-    ImageId: ami-0b206e33498f6acbe   # Deep Learning AMI 18.04 + ray 1.0 etc.
+    ImageId: ami-01aad86525617098d   # base DL AMI 35
+    # ImageId: ami-0b206e33498f6acbe   # Deep Learning AMI 18.04 + ray 1.0 etc.
     SubnetId: subnet-78d4bd53
 
     # Run workers on spot by default. Comment this out to use on-demand.
@@ -71,9 +73,14 @@ worker_nodes:
 
     # Additional options in the boto docs.
 
-    
+cluster_synced_files: []
+
 setup_commands:
+  - echo "setup"
   - pip install ray[all]
+#  - git clone https://github.com/druce/iowa
+  - cd ~/iowa; git pull
+  - pip install -r ~/iowa/requirements.txt
   # The following line demonstrate that you can specify arbitrary
   # startup scripts on the cluster.
   - touch /tmp/hyperopt.txt
@@ -82,9 +89,13 @@ setup_commands:
 # Custom commands that will be run on the head node after common setup.
 head_setup_commands:
   - echo "head setup"
-  - cd ~/iowa; git pull
 #    - pip install boto3>=1.4.8  # 1.4.8 adds InstanceMarketOptions
 
 # Custom commands that will be run on worker nodes after common setup.
 worker_setup_commands:
     - echo "worker setup"
+
+head_start_ray_commands:
+     - ray stop
+     - ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/iowa/ray1.0.yaml
+    
