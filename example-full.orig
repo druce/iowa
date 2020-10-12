@@ -1,13 +1,5 @@
-# issue seen with ray 1.0 ERROR: ray-1.0.0-cp36-cp36m-manylinux1_x86_64.whl is not a supported wheel on this platform.
-# changes from example
-# region, availability zone = us-east-1b
-# ami-01aad86525617098d for latest deep learning AMI v.35 in us-east
-# copied subnet where my existing instances reside
-
 # An unique identifier for the head node and workers of this cluster.
-############################################################
-cluster_name: hyperopt
-############################################################
+cluster_name: default
 
 # The minimum number of workers nodes to launch in addition to the head
 # node. This number should be >= 0.
@@ -58,15 +50,11 @@ idle_timeout_minutes: 5
 # Cloud-provider specific configuration.
 provider:
     type: aws
-############################################################
-    region: us-east-1
-############################################################
+    region: us-west-2
     # Availability zone(s), comma-separated, that nodes may be launched in.
     # Nodes are currently spread between zones by a round-robin approach,
     # however this implementation detail should not be relied upon.
-############################################################
-    availability_zone: us-east-1b
-############################################################
+    availability_zone: us-west-2a,us-west-2b
     # Whether to allow node reuse. If set to False, nodes will be terminated
     # instead of stopped.
     cache_stopped_nodes: True # If not present, the default is True.
@@ -85,10 +73,7 @@ auth:
 # http://boto3.readthedocs.io/en/latest/reference/services/ec2.html#EC2.ServiceResource.create_instances
 head_node:
     InstanceType: m5.large
-############################################################    
-    ImageId: ami-0e03b889434a51f52 # Deep Learning AMI (Ubuntu) Version 30
-    SubnetId: subnet-78d4bd53
-############################################################    
+    ImageId: ami-0a2363a9cff180a64 # Deep Learning AMI (Ubuntu) Version 30
 
     # You can provision additional disk space with a conf as follows
     BlockDeviceMappings:
@@ -104,10 +89,8 @@ head_node:
 # http://boto3.readthedocs.io/en/latest/reference/services/ec2.html#EC2.ServiceResource.create_instances
 worker_nodes:
     InstanceType: m5.large
-############################################################    
-    ImageId: ami-0e03b889434a51f52 # Deep Learning AMI (Ubuntu) Version 30
-    SubnetId: subnet-78d4bd53
-############################################################    
+    ImageId: ami-0a2363a9cff180a64 # Deep Learning AMI (Ubuntu) Version 30
+
     # Run workers on spot by default. Comment this out to use on-demand.
     InstanceMarketOptions:
         MarketType: spot
@@ -145,8 +128,6 @@ setup_commands:
     # has your Ray repo pre-cloned. Then, you can replace the pip installs
     # below with a git checkout <your_sha> (and possibly a recompile).
     - echo 'export PATH="$HOME/anaconda3/envs/tensorflow_p36/bin:$PATH"' >> ~/.bashrc
-    - python --version
-    - wget https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-1.1.0.dev0-cp36-cp36m-manylinux1_x86_64.whl
     - pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-1.1.0.dev0-cp36-cp36m-manylinux1_x86_64.whl
     # Consider uncommenting these if you also want to run apt-get commands during setup
     # - sudo pkill -9 apt-get || true

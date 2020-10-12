@@ -1,8 +1,7 @@
-# issue seen with ray 1.0 ERROR: ray-1.0.0-cp36-cp36m-manylinux1_x86_64.whl is not a supported wheel on this platform.
 # changes from example
 # region, availability zone = us-east-1b
-# ami-01aad86525617098d for latest deep learning AMI v.35 in us-east
 # copied subnet where my existing instances reside
+# created own AMI from latest deep learning, installed anaconda+ray, removed setup instructions
 
 # An unique identifier for the head node and workers of this cluster.
 ############################################################
@@ -40,7 +39,8 @@ docker:
 
     # Example of running a GPU head with CPU workers
     # head_image: "rayproject/ray:0.8.7-gpu"
-    # Allow Ray to automatically detect GPUs
+    # head_run_options:
+    #     - --runtime=nvidia
 
     # worker_image: "rayproject/ray:0.8.7"
     # worker_run_options: []
@@ -86,7 +86,7 @@ auth:
 head_node:
     InstanceType: m5.large
 ############################################################    
-    ImageId: ami-0e03b889434a51f52 # Deep Learning AMI (Ubuntu) Version 30
+    ImageId: ami-09d6afbbfa0062131 # Deep Learning AMI 18.04 + ray 1.0 etc.
     SubnetId: subnet-78d4bd53
 ############################################################    
 
@@ -105,9 +105,10 @@ head_node:
 worker_nodes:
     InstanceType: m5.large
 ############################################################    
-    ImageId: ami-0e03b889434a51f52 # Deep Learning AMI (Ubuntu) Version 30
+    ImageId: ami-09d6afbbfa0062131  # Deep Learning AMI 18.04 + ray 1.0 etc.
     SubnetId: subnet-78d4bd53
 ############################################################    
+
     # Run workers on spot by default. Comment this out to use on-demand.
     InstanceMarketOptions:
         MarketType: spot
@@ -141,13 +142,11 @@ initialization_commands: []
 
 # List of shell commands to run to set up nodes.
 setup_commands:
+      - echo "setup"
     # Note: if you're developing Ray, you probably want to create an AMI that
     # has your Ray repo pre-cloned. Then, you can replace the pip installs
     # below with a git checkout <your_sha> (and possibly a recompile).
-    - echo 'export PATH="$HOME/anaconda3/envs/tensorflow_p36/bin:$PATH"' >> ~/.bashrc
-    - python --version
-    - wget https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-1.1.0.dev0-cp36-cp36m-manylinux1_x86_64.whl
-    - pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-1.1.0.dev0-cp36-cp36m-manylinux1_x86_64.whl
+    # - echo 'export PATH="$HOME/anaconda3/envs/tensorflow_p36/bin:$PATH"' >> ~/.bashrc
     # Consider uncommenting these if you also want to run apt-get commands during setup
     # - sudo pkill -9 apt-get || true
     # - sudo pkill -9 dpkg || true
@@ -155,17 +154,20 @@ setup_commands:
 
 # Custom commands that will be run on the head node after common setup.
 head_setup_commands:
-    - pip install 'boto3>=1.4.8'  # 1.4.8 adds InstanceMarketOptions
+  - echo "head setup"
+#    - pip install boto3>=1.4.8  # 1.4.8 adds InstanceMarketOptions
 
 # Custom commands that will be run on worker nodes after common setup.
-worker_setup_commands: []
+worker_setup_commands:
+    - echo "worker setup"
+
 
 # Command to start ray on the head node. You don't need to change this.
 head_start_ray_commands:
     - ray stop
-    - ulimit -n 65536; ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
+    - ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
 
 # Command to start ray on worker nodes. You don't need to change this.
 worker_start_ray_commands:
     - ray stop
-    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
+    - ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
