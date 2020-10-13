@@ -8,7 +8,7 @@ initial_workers: 4
 
 # The minimum number of workers nodes to launch in addition to the head
 # node. This number should be >= 0.
-min_workers: 4
+min_workers: 0
 
 # The maximum number of workers nodes to launch in addition to the head
 # node.
@@ -19,7 +19,7 @@ max_workers: 4 # this means zero workers
 # target_utilization is 0.8, it would resize the cluster to 13. This fraction
 # can be decreased to increase the aggressiveness of upscaling.
 # This max value allowed is 1.0, which is the most conservative setting.
-target_utilization_fraction: 0.0
+target_utilization_fraction: 0.5
 
 # If a node is idle for this many minutes, it will be removed.
 idle_timeout_minutes: 5
@@ -34,7 +34,7 @@ provider:
     availability_zone: us-east-1b
     # Whether to allow node reuse. If set to False, nodes will be terminated
     # instead of stopped.
-    cache_stopped_nodes: True # If not present, the default is True.
+    cache_stopped_nodes: False # If not present, the default is True.
 
 # How Ray will authenticate with newly launched nodes.
 auth:
@@ -83,8 +83,7 @@ cluster_synced_files: []
 setup_commands:
   - echo "setup"
   - pip install ray[all]
-#  - git clone https://github.com/druce/iowa
-  - cd ~/iowa; git pull
+  - git clone https://github.com/druce/iowa
   - pip install -r ~/iowa/requirements.txt
   # The following line demonstrate that you can specify arbitrary
   # startup scripts on the cluster.
@@ -99,8 +98,3 @@ head_setup_commands:
 # Custom commands that will be run on worker nodes after common setup.
 worker_setup_commands:
     - echo "worker setup"
-
-head_start_ray_commands:
-     - ray stop
-     - ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/iowa/ray1.0.yaml
-    
