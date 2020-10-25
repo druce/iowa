@@ -41,11 +41,10 @@ auth:
    ssh_user: ubuntu
 
 head_node:
-    InstanceType: m5.large
+    InstanceType: m5.large 
     ImageId: ami-01aad86525617098d   # base DL AMI 35
-    # ImageId: ami-0b206e33498f6acbe  # Deep Learning AMI 18.04 + ray 1.0 etc.
-    # SubnetId: subnet-78d4bd53
-
+    # ImageId: ami-0b206e33498f6acbe  # my own Deep Learning AMI 18.04 + ray 1.0 etc.
+    # SubnetId: subnet-78d4bd53  # my subnet if default doesn't work
     # You can provision additional disk space with a conf as follows
     BlockDeviceMappings:
         - DeviceName: /dev/sda1
