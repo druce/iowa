@@ -6,7 +6,7 @@ pandas
 matplotlib
 seaborn
 jupyter
-# install with pip in this order 
+# install with pip in this order  
 mxnet
 autogluon
 
